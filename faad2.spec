@@ -75,7 +75,6 @@ rm %{buildroot}%{_libdir}/libmp4ff.a
 %{_mandir}/man1/faad.1*
 
 %files libs
-%{!?_licensedir:%global license %%doc}
 %license COPYING
 %doc AUTHORS ChangeLog NEWS README*
 %{_libdir}/libfaad.so.*
