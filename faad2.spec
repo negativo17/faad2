@@ -1,14 +1,14 @@
 Summary:    Open source MPEG-4 and MPEG-2 AAC decoder
 Name:       faad2
 Epoch:      1
-Version:    2.7
-Release:    8%{?dist}
+Version:    2.8.8
+Release:    1%{?dist}
 License:    GPLv2+
 URL:        http://www.audiocoding.com/faad2.html
 
-Source:     http://downloads.sourceforge.net/sourceforge/faac/%{name}-%{version}.tar.bz2
+Source:     http://downloads.sourceforge.net/sourceforge/faac/%{name}-%{version}.tar.gz
 # fix non-PIC objects in libmp4ff.a
-Patch0:     %{name}-pic.patch
+Patch0:     %{name}-2.8.8-pic.patch
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -32,7 +32,7 @@ This package contains the shared library libfaad.
 
 %package    devel
 Summary:    Development libraries of the FAAD 2 AAC decoder
-Requires:   %{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:   %{name}-libs%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description devel
 FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
@@ -43,28 +43,21 @@ This package contains development files and documentation for libfaad.
 %prep
 %setup -q
 %patch0 -p1 -b .pic
-find . -name "*.c" -o -name "*.h" -exec chmod 644 {} \;
-
-for f in AUTHORS COPYING ChangeLog NEWS README* TODO ; do
-    tr -d '\r' <$f >$f.n && touch -r $f $f.n && mv -f $f.n $f
-done
 
 %build
 autoreconf -vif
 %configure \
     --disable-static \
+    --with-drm \
+    --with-mpeg4ip \
     --without-xmms
 
 make %{?_smp_mflags}
 
 %install
 %make_install
-install -d -m755 %{buildroot}%{_mandir}/man1
-mv %{buildroot}%{_mandir}/{manm/faad.man,man1/faad.1}
 
-rm %{buildroot}%{_libdir}/libfaad.la
-rm %{buildroot}%{_includedir}/mp4ff{,int}.h
-rm %{buildroot}%{_libdir}/libmp4ff.a
+find %{buildroot} -name "*.la" -delete
 
 %post libs -p /sbin/ldconfig
 
@@ -76,15 +69,20 @@ rm %{buildroot}%{_libdir}/libmp4ff.a
 
 %files libs
 %license COPYING
-%doc AUTHORS ChangeLog NEWS README*
+%doc AUTHORS ChangeLog README*
 %{_libdir}/libfaad.so.*
+%{_libdir}/libfaad_drm.so.*
 
 %files devel
-%doc TODO docs/Ahead?AAC?Decoder?library?documentation.pdf
+%doc TODO
 %{_includedir}/*.h
 %{_libdir}/libfaad.so
+%{_libdir}/libfaad_drm.so
 
 %changelog
+* Tue Apr 10 2018 Simone Caronni <negativo17@gmail.com> - 1:2.8.8-1
+- Update to 2.8.8.
+
 * Fri Apr 22 2016 Simone Caronni <negativo17@gmail.com> - 1:2.7-8
 - Clean up SPEC file.
 - Use autotools to avoid RPATH generation.

@@ -1,0 +1,12 @@
+diff -Naur faad2-2.8.8.old/common/mp4ff/Makefile.in faad2-2.8.8/common/mp4ff/Makefile.in
+--- faad2-2.8.8.old/common/mp4ff/Makefile.in	2017-12-17 20:55:50.000000000 +0100
++++ faad2-2.8.8/common/mp4ff/Makefile.in	2018-04-10 13:30:07.353629528 +0200
+@@ -190,7 +190,7 @@
+ AWK = @AWK@
+ CC = @CC@
+ CCDEPMODE = @CCDEPMODE@
+-CFLAGS = @CFLAGS@
++CFLAGS = @CFLAGS@ -DPIC -fPIC
+ CPP = @CPP@
+ CPPFLAGS = @CPPFLAGS@
+ CXX = @CXX@
